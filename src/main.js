@@ -58,11 +58,12 @@ function init() {
   window.addEventListener('resize', onWindowResize, false);
 
   // 添加按钮事件监听
-  document.getElementById('pbr-model').addEventListener('click', () => loadModel('/Pbr/base.obj'));
-  document.getElementById('shaded-model').addEventListener('click', () => loadModel('/Shaded/base.obj'));
-
+  // 修改这两行
+  document.getElementById('pbr-model').addEventListener('click', () => loadModel('./Pbr/base.obj'));
+  document.getElementById('shaded-model').addEventListener('click', () => loadModel('./Shaded/base.obj'));
+  
   // 默认加载PBR模型
-  loadModel('/Pbr/base.obj');
+  loadModel('./Pbr/base.obj');
 }
 
 // 加载模型
