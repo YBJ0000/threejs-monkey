@@ -19,7 +19,7 @@ function init() {
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 2.7;
   camera.position.y = 1;
-  camera.position.x = -2;
+  camera.position.x = 0;
 
 
   // 创建渲染器
