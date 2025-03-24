@@ -96,8 +96,8 @@ function loadModel(path) {
             normalMap: normalMap,
             metalnessMap: metallicMap,
             roughnessMap: roughnessMap,
-            metalness: 1.0,
-            roughness: 1.0
+            metalness: 0.1,
+            roughness: 1
           });
         }
       });
