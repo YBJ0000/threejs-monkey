@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 let scene, camera, renderer, controls;
 let currentModel = null;
 let autoRotate = true;
 let lastInteraction = 0;
-const INTERACTION_TIMEOUT = 3000; // 3秒后恢复自动旋转
+const INTERACTION_TIMEOUT = 3000;
 
 // 初始化场景
 function init() {
@@ -57,99 +56,43 @@ function init() {
   // 窗口大小调整处理
   window.addEventListener('resize', onWindowResize, false);
 
-  // 添加按钮事件监听
-  // 修改这两行
-  document.getElementById('pbr-model').addEventListener('click', () => loadModel('./Pbr/base.obj'));
-  document.getElementById('shaded-model').addEventListener('click', () => loadModel('./Shaded/base.obj'));
-  
-  // 默认加载PBR模型
-  loadModel('./Pbr/base.obj');
+  // 移除按钮事件监听相关代码
+  loadModel('./stuffed_monkey_toy_with_large_eyes.glb');
 }
 
-// 加载模型
+// 重写加载模型函数
 function loadModel(path) {
-  const textureLoader = new THREE.TextureLoader();
-  const objLoader = new OBJLoader();
+  const loader = new GLTFLoader();
 
-  // 根据路径判断是PBR还是Shaded模型
-  const isPBR = path.includes('Pbr');
-  const basePath = path.substring(0, path.lastIndexOf('/') + 1);
+  loader.load(path, (gltf) => {
+    if (currentModel) {
+      scene.remove(currentModel);
+    }
+    
+    currentModel = gltf.scene;
 
-  if (isPBR) {
-    // 加载PBR贴图
-    const diffuseMap = textureLoader.load(basePath + 'texture_diffuse.png');
-    const normalMap = textureLoader.load(basePath + 'texture_normal.png');
-    const metallicMap = textureLoader.load(basePath + 'texture_metallic.png');
-    const roughnessMap = textureLoader.load(basePath + 'texture_roughness.png');
-
-    objLoader.load(path, (object) => {
-      if (currentModel) {
-        scene.remove(currentModel);
+    // 设置材质属性
+    currentModel.traverse((child) => {
+      if (child.isMesh && child.material) {
+        child.material.metalness = 0.1;  // 设置金属感为0.1
+        child.material.roughness = 1.0;  // 设置粗糙度为1.0
+        child.material.needsUpdate = true;
       }
-      currentModel = object;
-
-      // 为模型的每个部分应用PBR材质
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            map: diffuseMap,
-            normalMap: normalMap,
-            metalnessMap: metallicMap,
-            roughnessMap: roughnessMap,
-            metalness: 0.1,
-            roughness: 1
-          });
-        }
-      });
-
-      // 调整模型大小和位置
-      const box = new THREE.Box3().setFromObject(object);
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2 / maxDim;
-      object.scale.multiplyScalar(scale);
-
-      // 将模型居中
-      const center = box.getCenter(new THREE.Vector3());
-      object.position.sub(center.multiplyScalar(scale));
-
-      scene.add(object);
     });
-  } else {
-    // 加载Shaded贴图
-    const shadedMap = textureLoader.load(basePath + 'shaded.png');
 
-    objLoader.load(path, (object) => {
-      if (currentModel) {
-        scene.remove(currentModel);
-      }
-      currentModel = object;
+    // 调整模型大小和位置
+    const box = new THREE.Box3().setFromObject(currentModel);
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 2 / maxDim;
+    currentModel.scale.multiplyScalar(scale);
 
-      // 为模型的每个部分应用基础材质
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            map: shadedMap,
-            metalness: 0.0,
-            roughness: 0.5
-          });
-        }
-      });
+    // 将模型居中
+    const center = box.getCenter(new THREE.Vector3());
+    currentModel.position.sub(center.multiplyScalar(scale));
 
-      // 调整模型大小和位置
-      const box = new THREE.Box3().setFromObject(object);
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2 / maxDim;
-      object.scale.multiplyScalar(scale);
-
-      // 将模型居中
-      const center = box.getCenter(new THREE.Vector3());
-      object.position.sub(center.multiplyScalar(scale));
-
-      scene.add(object);
-    });
-  }
+    scene.add(currentModel);
+  });
 }
 
 // 窗口大小调整处理
