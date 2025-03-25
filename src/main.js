@@ -20,16 +20,17 @@ function init() {
   camera.position.y = 1;
   camera.position.x = 0;
 
-
   // 创建渲染器
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
 
-  // 添加轨道控制器
+  // 添加轨道控制器 (移动到渲染器创建之后)
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
+  controls.minDistance = 1.5;  // 设置最小距离
+  controls.maxDistance = 10; // 设置最大距离
 
   // 添加控制器事件监听
   controls.addEventListener('start', () => {
