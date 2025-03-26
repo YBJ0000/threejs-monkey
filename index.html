@@ -28,6 +28,7 @@
       /* 防止文字影响3D场景交互 */
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       /* 文字阴影提高可读性 */
+      transition: all 0.3s ease;
     }
 
     #controls {
@@ -40,6 +41,7 @@
       color: white;
       font-family: Arial, sans-serif;
       width: 120px;
+      transition: all 0.3s ease;
     }
 
     #rotateButton {
@@ -63,6 +65,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      transition: all 0.3s ease;
     }
 
     .speed-option {
@@ -70,6 +73,39 @@
       align-items: center;
       gap: 8px;
       color: white;
+    }
+
+    /* 移动设备适配 */
+    @media screen and (max-width: 768px) {
+      #controls {
+        top: 20px;
+        bottom: auto;
+        right: 50%;
+        transform: translateX(50%);
+        width: 50%;
+        max-width: 400px;
+        padding: 12px;
+      }
+
+      #rotateButton {
+        margin-bottom: 8px;
+        padding: 10px;
+        font-size: 13px;
+      }
+
+      .speed-control {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 12px;
+        font-size: 13px;
+      }
+
+      .speed-option {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
     }
   </style>
 </head>
