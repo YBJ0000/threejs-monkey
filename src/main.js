@@ -7,6 +7,7 @@ let currentModel = null;
 let autoRotate = true;
 let lastInteraction = 0;
 const INTERACTION_TIMEOUT = 3000;
+let rotationSpeed = 0.01; // 默认旋转速度
 
 // 初始化场景
 function init() {
@@ -32,14 +33,7 @@ function init() {
   controls.minDistance = 1.5;  // 设置最小距离
   controls.maxDistance = 10; // 设置最大距离
 
-  // 添加控制器事件监听
-  controls.addEventListener('start', () => {
-    autoRotate = false;
-  });
-
-  controls.addEventListener('end', () => {
-    lastInteraction = Date.now();
-  });
+  // 移除控制器事件监听，让旋转完全由按钮控制
 
   // 添加光源
   const ambientLight = new THREE.AmbientLight(0xfff0e0, 1.2);
@@ -57,7 +51,21 @@ function init() {
   // 窗口大小调整处理
   window.addEventListener('resize', onWindowResize, false);
 
-  // 移除按钮事件监听相关代码
+  // 添加旋转控制按钮事件监听
+  const rotateButton = document.getElementById('rotateButton');
+  rotateButton.addEventListener('click', () => {
+    autoRotate = !autoRotate;
+    rotateButton.textContent = autoRotate ? 'Stop Rotation' : 'Start Rotation';
+  });
+
+  // 添加速度控制事件监听
+  const speedControls = document.querySelectorAll('input[name="speed"]');
+  speedControls.forEach(control => {
+    control.addEventListener('change', (e) => {
+      rotationSpeed = parseFloat(e.target.value);
+    });
+  });
+
   loadModel('./stuffed_monkey_toy_with_large_eyes.glb');
 }
 
@@ -69,7 +77,7 @@ function loadModel(path) {
     if (currentModel) {
       scene.remove(currentModel);
     }
-    
+
     currentModel = gltf.scene;
 
     // 设置材质属性
@@ -107,14 +115,11 @@ function onWindowResize() {
 function animate() {
   requestAnimationFrame(animate);
 
-  // 检查是否应该恢复自动旋转
-  if (!autoRotate && Date.now() - lastInteraction > INTERACTION_TIMEOUT) {
-    autoRotate = true;
-  }
+
 
   // 自动旋转
   if (autoRotate && currentModel) {
-    currentModel.rotation.y += 0.01;
+    currentModel.rotation.y += rotationSpeed;
   }
 
   controls.update();

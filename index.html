@@ -1,34 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Monkey Viewer</title>
-    <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; /* 防止出现滚动条 */
-        }
-        canvas { 
-            display: block; 
-        }
-        #info {
-            position: fixed;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            color: white;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            pointer-events: none; /* 防止文字影响3D场景交互 */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* 文字阴影提高可读性 */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Monkey Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      /* 防止出现滚动条 */
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #info {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      pointer-events: none;
+      /* 防止文字影响3D场景交互 */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      /* 文字阴影提高可读性 */
+    }
+
+    #controls {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      color: white;
+      font-family: Arial, sans-serif;
+      width: 120px;
+    }
+
+    #rotateButton {
+      background: #4CAF50;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      width: 100%;
+      /* text size */
+      font-size: 14px;
+    }
+
+    #rotateButton:hover {
+      background: #45a049;
+    }
+
+    .speed-control {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .speed-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+    }
+  </style>
 </head>
+
 <body>
-    <div id="info">
-        拖动鼠标来旋转模型 | 滚轮缩放 | 3秒后自动旋转
+  <div id="info">
+    Drag to rotate | Scroll to zoom
+  </div>
+  <div id="controls">
+    <button id="rotateButton">Stop Rotation</button>
+    <div class="speed-control">
+      <div class="speed-option">
+        <input type="radio" id="slow" name="speed" value="0.005">
+        <label for="slow">Slow</label>
+      </div>
+      <div class="speed-option">
+        <input type="radio" id="medium" name="speed" value="0.01" checked>
+        <label for="medium">Medium</label>
+      </div>
+      <div class="speed-option">
+        <input type="radio" id="fast" name="speed" value="0.02">
+        <label for="fast">Fast</label>
+      </div>
     </div>
-    <script type="module" src="/src/main.js"></script>
+  </div>
+  <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
